@@ -1,0 +1,39 @@
+# Mac OS X files
+.DS_Store
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, build with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
+.glide/
+
+# Dependency directories (remove the comment below to include it)
+vendor/
+
+# 缓存文件
+tmp/
+
+# 生成的shell文件
+shell/
+
+# 文件存储目录
+website/storage
+
+# 日志文件
+app.log
+
+# 安装锁定文件
+install.lock
+
+# 数据库文件
+data.db
