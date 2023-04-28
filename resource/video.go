@@ -1,6 +1,7 @@
 package resource
 
 import (
+	"github.com/quarkcms/douyin-helper/action"
 	"github.com/quarkcms/douyin-helper/model"
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin/actions"
 	"github.com/quarkcms/quark-go/pkg/app/handler/admin/searches"
@@ -54,6 +55,7 @@ func (p *Video) Searches(ctx *builder.Context) []interface{} {
 func (p *Video) Actions(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
+		(&action.Sync{}).Init(),
 		(&actions.Delete{}).Init("批量删除"),
 		(&actions.Delete{}).Init("删除"),
 	}
