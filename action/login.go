@@ -7,20 +7,20 @@ import (
 	"gorm.io/gorm"
 )
 
-type Sync struct {
+type Login struct {
 	actions.Action
 }
 
 // 初始化
-func (p *Sync) Init() *Sync {
+func (p *Login) Init() *Login {
 	// 初始化父结构
 	p.ParentInit()
 
 	// 按钮类型
-	p.Type = "primary"
+	p.Type = "default"
 
 	// 行为名称
-	p.Name = "同步数据"
+	p.Name = "登录账号"
 
 	// 执行成功后刷新的组件
 	p.Reload = "table"
@@ -38,8 +38,8 @@ func (p *Sync) Init() *Sync {
 }
 
 // 执行行为句柄
-func (p *Sync) Handle(ctx *builder.Context, query *gorm.DB) error {
-	douyin.New().Debug(true).GetUserProfile()
+func (p *Login) Handle(ctx *builder.Context, query *gorm.DB) error {
+	douyin.New().Debug(true).Login()
 
 	return ctx.JSONOk("操作成功")
 }

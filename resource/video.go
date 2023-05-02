@@ -55,6 +55,7 @@ func (p *Video) Searches(ctx *builder.Context) []interface{} {
 func (p *Video) Actions(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
+		(&action.Login{}).Init(),
 		(&action.Sync{}).Init(),
 		(&actions.Delete{}).Init("批量删除"),
 		(&actions.Delete{}).Init("删除"),
