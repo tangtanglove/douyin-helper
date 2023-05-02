@@ -61,18 +61,11 @@ const (
 )
 
 type Douyin struct {
-	debug      bool
-	QueryValue *QueryValue
-	Header     *Header
+	debug bool
 }
 
 func New() *Douyin {
-	p := &Douyin{}
-
-	p.InitHeader()
-	p.InitQuery()
-
-	return p
+	return &Douyin{}
 }
 
 // 设置Debug模式
@@ -82,65 +75,10 @@ func (p *Douyin) Debug(debug bool) *Douyin {
 	return p
 }
 
-// 初始化通用头部
-func (p *Douyin) InitHeader() *Douyin {
-	p.Header = &Header{
-		Accept:          "application/json, text/plain, */*",
-		AcceptEncoding:  "gzip, deflate, br",
-		AcceptLanguage:  "zh-CN,zh;q=0.9",
-		CacheControl:    "no-cache",
-		Pragma:          "no-cache",
-		Referer:         "https://www.douyin.com/user/self",
-		SecChUa:         "\"Chromium\";v=\"110\", \"Not A(Brand\";v=\"24\", \"Google Chrome\";v=\"110\"",
-		SecChUaMobile:   "?0",
-		SecChUaPlatform: "\"Windows\"",
-		SecFetchDest:    "empty",
-		SecFetchMode:    "cors",
-		SecFetchSite:    "same-origin",
-		UserAgent:       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
-		Host:            "www.douyin.com",
-		Connection:      "keep-alive",
-	}
-
-	return p
-}
-
-// 初始化通用Query参数
-func (p *Douyin) InitQuery() *Douyin {
-	p.QueryValue = &QueryValue{
-		DevicePlatform:  "webapp",
-		Aid:             "6383",
-		Channel:         "channel_pc_web",
-		PcClientType:    "1",
-		VersionCode:     "170400",
-		VersionName:     "17.4.0",
-		CookieEnabled:   "true",
-		ScreenWidth:     "1536",
-		ScreenHeight:    "864",
-		BrowserLanguage: "zh-CN",
-		BrowserPlatform: "Win32",
-		BrowserName:     "Chrome",
-		BrowserVersion:  "110.0.0.0",
-		BrowserOnline:   "true",
-		EngineName:      "Blink",
-		EngineVersion:   "110.0.0.0",
-		OsName:          "Windows",
-		OsVersion:       "10",
-		CpuCoreNum:      "8",
-		DeviceMemory:    "8",
-		Platform:        "PC",
-		Downlink:        "10",
-		EffectiveType:   "4g",
-		RoundTripTime:   "50",
-		Webid:           "7225873996603786752",
-	}
-
-	return p
-}
-
-// 登录获取用户信息
+// 用户登录
 func (p *Douyin) Login() *Douyin {
-	// create chrome instance
+
+	// 创建Chrome实例
 	ctx, _ := chromedp.NewExecAllocator(
 		context.Background(),
 		append(
@@ -154,11 +92,11 @@ func (p *Douyin) Login() *Douyin {
 	)
 	defer cancel()
 
-	// create a timeout
+	// 设置超时
 	ctx, cancel = context.WithTimeout(ctx, 150*time.Second)
 	defer cancel()
 
-	// navigate to a page, wait for an element, click
+	// 打开页面
 	err := chromedp.Run(ctx,
 		chromedp.Navigate(mainDomain),
 		chromedp.WaitVisible(`#douyin-header > div.oJArD0aS > header > div > div > div.iqHX00br > div > div > div > div:nth-child(6) > div > a`),
@@ -191,138 +129,24 @@ func (p *Douyin) Login() *Douyin {
 	return p
 }
 
-// 将query转换字符串
-func (p *Douyin) queryParser(apiQuerys []*request.Query) []*request.Query {
-	querys := []*request.Query{
-		{
-			Key:   "device_platform",
-			Value: p.QueryValue.DevicePlatform,
-		},
-		{
-			Key:   "aid",
-			Value: p.QueryValue.Aid,
-		},
-		{
-			Key:   "channel",
-			Value: p.QueryValue.Channel,
-		},
+// 获取用户信息
+func (p *Douyin) GetUserProfile() error {
+
+	// 请求URL
+	url := mainDomain + userProfileSelf
+
+	// 查询参数
+	query := map[string]string{
+		"publish_video_strategy_type": "2",
+		"source":                      "source",
 	}
 
-	envQuerys := []*request.Query{
-		{
-			Key:   "pc_client_type",
-			Value: p.QueryValue.PcClientType,
-		},
-		{
-			Key:   "version_code",
-			Value: p.QueryValue.VersionCode,
-		},
-		{
-			Key:   "version_name",
-			Value: p.QueryValue.VersionName,
-		},
-		{
-			Key:   "cookie_enabled",
-			Value: p.QueryValue.CookieEnabled,
-		},
-		{
-			Key:   "screen_width",
-			Value: p.QueryValue.ScreenWidth,
-		},
-		{
-			Key:   "screen_height",
-			Value: p.QueryValue.ScreenHeight,
-		},
-		{
-			Key:   "browser_language",
-			Value: p.QueryValue.BrowserLanguage,
-		},
-		{
-			Key:   "browser_platform",
-			Value: p.QueryValue.BrowserPlatform,
-		},
+	// 发送请求
+	result := request.New().
+		GET(url).
+		SetDebug(p.debug).
+		SetQuery(query).
+		Do()
 
-		{
-			Key:   "browser_name",
-			Value: p.QueryValue.BrowserName,
-		},
-		{
-			Key:   "browser_version",
-			Value: p.QueryValue.BrowserVersion,
-		},
-		{
-			Key:   "browser_online",
-			Value: p.QueryValue.BrowserOnline,
-		},
-		{
-			Key:   "engine_name",
-			Value: p.QueryValue.EngineName,
-		},
-		{
-			Key:   "engine_version",
-			Value: p.QueryValue.EngineVersion,
-		},
-		{
-			Key:   "os_name",
-			Value: p.QueryValue.OsName,
-		},
-		{
-			Key:   "os_version",
-			Value: p.QueryValue.OsVersion,
-		},
-		{
-			Key:   "cpu_core_num",
-			Value: p.QueryValue.CpuCoreNum,
-		},
-		{
-			Key:   "device_memory",
-			Value: p.QueryValue.DeviceMemory,
-		},
-		{
-			Key:   "platform",
-			Value: p.QueryValue.Platform,
-		},
-		{
-			Key:   "downlink",
-			Value: p.QueryValue.Downlink,
-		},
-		{
-			Key:   "effective_type",
-			Value: p.QueryValue.EffectiveType,
-		},
-		{
-			Key:   "round_trip_time",
-			Value: p.QueryValue.RoundTripTime,
-		},
-		{
-			Key:   "webid",
-			Value: p.QueryValue.Webid,
-		},
-	}
-
-	querys = append(querys, apiQuerys...)
-	querys = append(querys, envQuerys...)
-
-	return querys
-}
-
-// 通用的头部
-func (p *Douyin) headerParser() map[string]string {
-	return map[string]string{
-		"accept":             p.Header.Accept,
-		"accept-language":    p.Header.AcceptLanguage,
-		"cache-control":      p.Header.CacheControl,
-		"cookie":             p.Header.Cookie,
-		"pragma":             p.Header.Pragma,
-		"referer":            p.Header.Referer,
-		"sec-ch-ua":          p.Header.SecChUa,
-		"sec-ch-ua-mobile":   p.Header.SecChUaMobile,
-		"sec-ch-ua-platform": p.Header.SecChUaPlatform,
-		"sec-fetch-dest":     p.Header.SecFetchDest,
-		"sec-fetch-mode":     p.Header.SecFetchMode,
-		"sec-fetch-site":     p.Header.SecFetchSite,
-		"user-agent":         p.Header.UserAgent,
-		"Host":               p.Header.Host,
-		"Connection":         p.Header.Connection,
-	}
+	return result
 }
