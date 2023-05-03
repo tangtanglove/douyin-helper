@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/guonaihong/gout"
-	"github.com/quarkcms/douyin-helper/utils/sign"
+	"github.com/quarkcms/douyin-helper/pkg/douyin/sign"
 )
 
 // 全局Cookies

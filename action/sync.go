@@ -1,7 +1,7 @@
 package action
 
 import (
-	"github.com/quarkcms/douyin-helper/utils/douyin"
+	"github.com/quarkcms/douyin-helper/pkg/douyin"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource/actions"
 	"gorm.io/gorm"
@@ -39,7 +39,9 @@ func (p *Sync) Init() *Sync {
 
 // 执行行为句柄
 func (p *Sync) Handle(ctx *builder.Context, query *gorm.DB) error {
-	douyin.New().Debug(true).GetUserProfile()
+	service := douyin.New().Debug(true).CreatorService()
+
+	service.GetMediaAwemePost()
 
 	return ctx.JSONOk("操作成功")
 }

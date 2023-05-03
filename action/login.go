@@ -1,7 +1,7 @@
 package action
 
 import (
-	"github.com/quarkcms/douyin-helper/utils/douyin"
+	"github.com/quarkcms/douyin-helper/pkg/douyin"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource/actions"
 	"gorm.io/gorm"
