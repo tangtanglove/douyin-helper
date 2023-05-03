@@ -11,6 +11,7 @@ const (
 	userProfileSelf = "/aweme/v1/web/user/profile/self/"
 )
 
+// 用户平台
 type User struct {
 	debug bool
 }
@@ -27,7 +28,7 @@ func (p *User) Debug(debug bool) *User {
 }
 
 // 获取用户信息
-func (p *User) GetUserProfile() error {
+func (p *User) GetUserProfile() (rsp map[string]interface{}, err error) {
 
 	// 请求URL
 	url := domain + userProfileSelf
@@ -39,11 +40,9 @@ func (p *User) GetUserProfile() error {
 	}
 
 	// 发送请求
-	result := request.New().
+	return request.New().
 		GET(url).
 		SetDebug(p.debug).
 		SetQuery(query).
 		Do()
-
-	return result
 }

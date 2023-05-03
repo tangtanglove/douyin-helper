@@ -148,9 +148,7 @@ func (p *Request) POST(url string) *Request {
 }
 
 // 发送请求
-func (p *Request) Do() error {
-	var err error
-
+func (p *Request) Do() (rsp map[string]interface{}, err error) {
 	// 将query转换字符串
 	p.QueryToString()
 
@@ -164,6 +162,7 @@ func (p *Request) Do() error {
 			Debug(p.Debug).
 			SetHeader(p.Header).
 			SetCookies(Cookies...).
+			BindJSON(&rsp).
 			Do()
 	case "POST":
 		err = gout.
@@ -171,8 +170,9 @@ func (p *Request) Do() error {
 			Debug(p.Debug).
 			SetHeader(p.Header).
 			SetCookies(Cookies...).
+			BindJSON(&rsp).
 			Do()
 	}
 
-	return err
+	return rsp, err
 }

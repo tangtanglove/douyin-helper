@@ -1,6 +1,10 @@
 package creator
 
-import "github.com/quarkcms/douyin-helper/pkg/douyin/request"
+import (
+	"strconv"
+
+	"github.com/quarkcms/douyin-helper/pkg/douyin/request"
+)
 
 // 主域名
 const (
@@ -12,6 +16,7 @@ const (
 	mediaAwemePost = "/web/api/media/aweme/post/"
 )
 
+// 创作服务平台
 type Creator struct {
 	debug bool
 }
@@ -27,25 +32,23 @@ func (p *Creator) Debug(debug bool) *Creator {
 	return p
 }
 
-// 获取作品列表
-func (p *Creator) GetMediaAwemePost() error {
+// 获取作品列表, status（状态）:0全部，1已发布，2审核中，3未通过；count（读取数量）:12；maxCursor（下一页游标）:0
+func (p *Creator) GetMediaAwemePost(status int, count int, maxCursor int) (rsp map[string]interface{}, err error) {
 
 	// 请求URL
 	url := domain + mediaAwemePost
 
 	// 查询参数
 	query := map[string]string{
-		"status":     "0",
-		"count":      "12",
-		"max_cursor": "0",
+		"status":     strconv.Itoa(status),
+		"count":      strconv.Itoa(count),
+		"max_cursor": strconv.Itoa(maxCursor),
 	}
 
 	// 发送请求
-	result := request.New().
+	return request.New().
 		GET(url).
 		SetDebug(p.debug).
 		SetQuery(query).
 		Do()
-
-	return result
 }

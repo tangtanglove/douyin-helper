@@ -1,6 +1,8 @@
 package action
 
 import (
+	"fmt"
+
 	"github.com/quarkcms/douyin-helper/pkg/douyin"
 	"github.com/quarkcms/quark-go/pkg/builder"
 	"github.com/quarkcms/quark-go/pkg/builder/template/adminresource/actions"
@@ -39,9 +41,17 @@ func (p *Sync) Init() *Sync {
 
 // 执行行为句柄
 func (p *Sync) Handle(ctx *builder.Context, query *gorm.DB) error {
-	service := douyin.New().Debug(true).CreatorService()
 
-	service.GetMediaAwemePost()
+	// 获取服务实例
+	service := douyin.
+		New().
+		Debug(false).
+		CreatorService()
+
+	// 获取作品列表
+	result, _ := service.GetMediaAwemePost(0, 12, 0)
+
+	fmt.Println(result)
 
 	return ctx.JSONOk("操作成功")
 }

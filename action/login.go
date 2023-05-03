@@ -39,7 +39,10 @@ func (p *Login) Init() *Login {
 
 // 执行行为句柄
 func (p *Login) Handle(ctx *builder.Context, query *gorm.DB) error {
-	douyin.New().Debug(true).Login()
+	douyin.
+		New().
+		Debug(true).
+		Login()
 
-	return ctx.JSONOk("操作成功")
+	return ctx.JSONOk("登录成功")
 }
